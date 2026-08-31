@@ -147,6 +147,44 @@ At http://127.0.0.1:8000/docs:
 3. `GET /api/conversations` — should list the conversation you just created.
 4. `GET /api/conversations/{conversation_id}/messages` — should list all 4 messages (2 user, 2 assistant) in order.
 
+## Phase 5 — Memory (long-term, semantic)
+
+### Get a Voyage AI API key
+
+1. Go to https://dashboard.voyageai.com/ and sign up (free tier is enough for personal use).
+2. Create an API key and copy it.
+
+### Pull the code and configure `.env`
+
+```
+git pull origin claude/personal-ai-agent-v1-y6qq3b
+notepad .env
+```
+
+Paste your key after `VOYAGE_API_KEY=`. Leave `VOYAGE_MODEL`, `VOYAGE_EMBEDDING_DIMENSION`, and `MEMORY_RETRIEVAL_TOP_K` as they are.
+
+### Install the new dependencies and restart
+
+```
+cd backend
+pip install -r requirements.txt
+cd ..
+uvicorn backend.api.main:app --reload --port 8000
+```
+
+The `memories` table (with a vector column) is created automatically on startup, same as the other tables.
+
+### Test it
+
+At http://127.0.0.1:8000/docs:
+
+1. `POST /api/chat` with `{"message": "I work at Printcell Imaging and my main project right now is this personal AI agent."}` (no `conversation_id` — a fresh conversation is fine).
+2. Wait about 5-10 seconds (memory classification happens quietly in the background after the reply comes back).
+3. `GET /api/memories` → you should see a new entry with that fact, a category, an importance score, and a confidence score.
+4. Start a **brand new** conversation (omit `conversation_id` again) and ask `{"message": "Where do I work?"}`. Claude should answer correctly using the retrieved memory — even though this is a different conversation than where you told it.
+
+If step 4 doesn't recall correctly, check that step 3 actually produced a memory first (classification can occasionally judge something not worth remembering, or take a few extra seconds).
+
 ---
 
 Further setup steps (frontend, deployment) will be added here as each phase introduces them.

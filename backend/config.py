@@ -10,10 +10,16 @@ ENV_PATH = BASE_DIR / ".env"
 class Settings(BaseSettings):
     anthropic_api_key: str
     database_url: str
+    voyage_api_key: str
 
     # Model IDs are configured here, never hard-coded in application logic.
     claude_model_main: str = "claude-sonnet-5"
     claude_model_utility: str = "claude-haiku-4-5"
+    voyage_model: str = "voyage-3.5"
+    voyage_embedding_dimension: int = 1024
+
+    # How many long-term memories to inject into a chat request.
+    memory_retrieval_top_k: int = 5
 
     backend_port: int = 8000
     environment: str = "development"
