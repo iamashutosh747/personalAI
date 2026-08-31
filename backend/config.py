@@ -18,6 +18,12 @@ class Settings(BaseSettings):
     backend_port: int = 8000
     environment: str = "development"
 
+    # Temporary single-user placeholder until real auth (Phase 11).
+    owner_email: str = "owner@example.com"
+
+    # Cost control: cap how many past messages are sent to Claude per request.
+    max_history_messages: int = 20
+
     model_config = SettingsConfigDict(
         env_file=ENV_PATH,
         env_file_encoding="utf-8",

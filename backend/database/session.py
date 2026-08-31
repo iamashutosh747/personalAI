@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from backend.config import settings
+from backend.database.models import Base
 
 
 def _normalize_url(url: str) -> str:
@@ -28,3 +29,7 @@ def get_db():
 def check_db_connection() -> None:
     with engine.connect() as conn:
         conn.execute(text("SELECT 1"))
+
+
+def init_db() -> None:
+    Base.metadata.create_all(bind=engine)

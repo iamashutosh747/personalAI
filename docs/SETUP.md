@@ -119,6 +119,34 @@ Then restart the server (`Ctrl+C`, then re-run `uvicorn backend.api.main:app --r
 
 At http://127.0.0.1:8000/docs, try `GET /health/db` → "Try it out" → "Execute". Expect `{"status": "ok"}`.
 
+## Phase 4 — Conversation history
+
+### Pull the code and configure `.env`
+
+```
+git pull origin claude/personal-ai-agent-v1-y6qq3b
+notepad .env
+```
+
+Set `OWNER_EMAIL` to your own email address (this seeds your one account — real login comes in Phase 11). Save and close.
+
+### Restart the server
+
+```
+uvicorn backend.api.main:app --reload --port 8000
+```
+
+On startup, the app automatically creates the `users`, `conversations`, and `messages` tables in your Supabase database — no manual SQL needed.
+
+### Test it
+
+At http://127.0.0.1:8000/docs:
+
+1. `POST /api/chat` with `{"message": "My favorite color is blue. Remember that."}` and no `conversation_id`. Note the `conversation_id` in the response.
+2. `POST /api/chat` again, this time including that same `conversation_id`, with `{"message": "What's my favorite color?", "conversation_id": "<paste it here>"}`. Claude should correctly answer "blue" — proving it now has real conversation memory within a thread.
+3. `GET /api/conversations` — should list the conversation you just created.
+4. `GET /api/conversations/{conversation_id}/messages` — should list all 4 messages (2 user, 2 assistant) in order.
+
 ---
 
 Further setup steps (frontend, deployment) will be added here as each phase introduces them.
