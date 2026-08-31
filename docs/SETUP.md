@@ -44,6 +44,49 @@ You should see `(venv)` at the start of your terminal prompt once activated.
 
 Copy `.env.example` to `.env` in the project root and fill in real values as each phase requires them. Never commit `.env`.
 
+Note: on some Windows setups, the plain `python` command is intercepted by an unrelated Python Launcher/Install Manager conflict. If `python --version` fails but you can open Python from the Start menu, use `py` in place of `python` for every command in this guide — they are equivalent.
+
+## Phase 2 — Basic Claude chat
+
+### Get an Anthropic API key
+
+1. Go to https://console.anthropic.com/ and sign in (or create an account).
+2. Open the "API Keys" section and create a new key.
+3. Copy it — you won't be able to view it again after leaving the page.
+
+### Configure `.env`
+
+In the project root (`personalAI/`, not `personalAI/backend/`):
+
+```
+copy .env.example .env
+```
+
+Open `.env` in a text editor and paste your key after `ANTHROPIC_API_KEY=`. Leave `CLAUDE_MODEL_MAIN` and `CLAUDE_MODEL_UTILITY` as they are — these control which Claude model is used, without any model name hard-coded in the application code.
+
+### Install backend dependencies
+
+With `(venv)` active, from the `backend` folder:
+
+```
+pip install -r requirements.txt
+```
+
+### Run the backend
+
+From the project root (`personalAI/`), with `(venv)` still active:
+
+```
+uvicorn backend.api.main:app --reload --port 8000
+```
+
+### Test it
+
+Open http://127.0.0.1:8000/docs in your browser (FastAPI's built-in interactive test page).
+
+1. Try `GET /health` → "Try it out" → "Execute". Expect `{"status": "ok", "environment": "development"}`.
+2. Try `POST /api/chat` → "Try it out" → enter `{"message": "Hello, are you working?"}` → "Execute". Expect a real reply from Claude in the response body.
+
 ---
 
 Further setup steps (database, frontend, deployment) will be added here as each phase introduces them.
