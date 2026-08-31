@@ -87,6 +87,38 @@ Open http://127.0.0.1:8000/docs in your browser (FastAPI's built-in interactive 
 1. Try `GET /health` → "Try it out" → "Execute". Expect `{"status": "ok", "environment": "development"}`.
 2. Try `POST /api/chat` → "Try it out" → enter `{"message": "Hello, are you working?"}` → "Execute". Expect a real reply from Claude in the response body.
 
+## Phase 3 — Database (Supabase Postgres)
+
+### Create a Supabase project
+
+1. Go to https://supabase.com/ and sign up (GitHub sign-in is fine).
+2. Click "New Project".
+3. Pick a name (e.g. `personal-ai`), set a database password — **save it somewhere**, it's needed for the connection string and Supabase won't show it again — pick a region, and create the project. Wait ~1-2 minutes for provisioning.
+
+### Enable pgvector (used starting Phase 5)
+
+In the project dashboard: Database → Extensions (left sidebar) → search "vector" → enable it. One-time step, saves revisiting this later.
+
+### Get the connection string
+
+Project Settings (gear icon) → Database → "Connection string". Use the **Session pooler** connection string (not "Direct connection") — it works reliably from any home network. Copy the URI and replace `[YOUR-PASSWORD]` with the password you set above.
+
+### Configure `.env`
+
+Paste the connection string after `DATABASE_URL=` in `.env`. The app automatically adjusts the driver prefix, so paste it exactly as Supabase gives it (starting with `postgresql://`).
+
+### Install the new dependency and restart
+
+```
+pip install -r requirements.txt
+```
+
+Then restart the server (`Ctrl+C`, then re-run `uvicorn backend.api.main:app --reload --port 8000`).
+
+### Test it
+
+At http://127.0.0.1:8000/docs, try `GET /health/db` → "Try it out" → "Execute". Expect `{"status": "ok"}`.
+
 ---
 
-Further setup steps (database, frontend, deployment) will be added here as each phase introduces them.
+Further setup steps (frontend, deployment) will be added here as each phase introduces them.

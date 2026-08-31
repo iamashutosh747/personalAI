@@ -9,6 +9,7 @@ ENV_PATH = BASE_DIR / ".env"
 
 class Settings(BaseSettings):
     anthropic_api_key: str
+    database_url: str
 
     # Model IDs are configured here, never hard-coded in application logic.
     claude_model_main: str = "claude-sonnet-5"
